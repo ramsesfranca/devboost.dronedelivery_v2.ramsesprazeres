@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DroneDelivery.Data\DroneDelivery.Data.csproj" />
+    <ProjectReference Include="..\DroneDelivery.Domain\DroneDelivery.Domain.csproj" />
+    <ProjectReference Include="..\DroneDelivery.Utility\DroneDelivery.Utility.csproj" />
+  </ItemGroup>
+
+</Project>
