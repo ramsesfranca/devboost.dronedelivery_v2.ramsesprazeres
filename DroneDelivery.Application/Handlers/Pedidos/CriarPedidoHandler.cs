@@ -74,6 +74,12 @@ namespace DroneDelivery.Application.Handlers.Pedidos
 
             var cliente = await this._userRepository.ObterAsync(this._clienteService.GetCurrentId());
 
+            if (cliente == null)
+            {
+                _response.AddNotification(new Notification("", "Cliente nõo encontrado"));
+                return _response;
+            }
+
             foreach (var drone in drones)
             {
                 //valida se algum drone tem autonomia e aceita capacidade para entregar o pedido

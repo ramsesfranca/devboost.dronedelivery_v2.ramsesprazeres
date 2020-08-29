@@ -6,13 +6,21 @@
 }// Pedido{
    "peso": 10
 }// Regitrar{
-    "nome": "username",
+    "nome": "Ramsés França",
     "senha": "Admin123",
     "role": "Admin",
-    "email": "admin4@test.com",
+    "email": "ramsesfranca87@gmail.com",
     "latitude": -23.5753639,
     "longitude": -46.692417
 }// Login{
-    "email": "admin4@test.com",
+    "email": "ramsesfranca87@gmail.com",
     "password": "Admin123"
 }
+
+--
+
+Testes
+
+"latitude": -23.5753639, "longitude": -46.692417
+"latitude": -23.5950753, "longitude": -46.645421
+
