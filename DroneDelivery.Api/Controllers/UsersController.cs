@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace DroneDelivery.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
-        private readonly IMediator _mediator;
-
         public UsersController(IMediator mediator)
+            : base(mediator)
         {
-            _mediator = mediator;
         }
 
         [HttpPost("login")]
@@ -24,11 +20,9 @@ namespace DroneDelivery.Api.Controllers
         [ProducesDefaultResponseType]
         public async Task<ActionResult<ResponseVal>> Login([FromBody] LoginUsuarioCommand command)
         {
-            var response = await _mediator.Send(command);
-            if (response.HasFails)
-                return BadRequest(response.Fails);
+            var response = await this._mediator.Send(command);
 
-            return Ok(response.Data);
+            return response.HasFails ? (ActionResult<ResponseVal>)BadRequest(response.Fails) : Ok(response.Data);
         }
 
         [HttpPost("registrar")]
@@ -37,12 +31,9 @@ namespace DroneDelivery.Api.Controllers
         [ProducesDefaultResponseType]
         public async Task<ActionResult> Post([FromBody] CriarUsuarioCommand command)
         {
-            var response = await _mediator.Send(command);
-            if (response.HasFails)
-                return BadRequest(response.Fails);
+            var response = await this._mediator.Send(command);
 
-            return Ok();
+            return response.HasFails ? (ActionResult)BadRequest(response.Fails) : Ok();
         }
-
     }
 }

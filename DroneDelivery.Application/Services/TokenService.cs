@@ -21,23 +21,24 @@ namespace DroneDelivery.Application.Services
             _settings = settings;
         }
 
-        private static ClaimsIdentity GetClaimsIdentity(User user)
+        private static ClaimsIdentity GetClaimsIdentity(Cliente usuario)
         {
             var identity = new ClaimsIdentity
             (
-                new GenericIdentity(user.Email),
-                new[] {
-                    new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Username)
+                new GenericIdentity(usuario.Email),
+                new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Jti, usuario.Id.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Sub, usuario.Nome)
                 }
             );
 
-            foreach (var role in user.Roles)
+            foreach (var role in usuario.Roles)
             {
                 identity.AddClaim(new Claim(ClaimTypes.Role, role));
             }
 
-            foreach (var policy in user.Permissions)
+            foreach (var policy in usuario.Permissions)
             {
                 identity.AddClaim(new Claim("permissions", policy));
             }
@@ -45,9 +46,9 @@ namespace DroneDelivery.Application.Services
             return identity;
         }
 
-        public JsonWebToken CreateJWT(User user)
+        public JsonWebToken CreateJWT(Cliente usuario)
         {
-            var identity = GetClaimsIdentity(user);
+            var identity = GetClaimsIdentity(usuario);
             var handler = new JwtSecurityTokenHandler();
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor
             {
@@ -65,7 +66,7 @@ namespace DroneDelivery.Application.Services
             return new JsonWebToken
             {
                 AccessToken = accessToken,
-                RefreshToken = CreateRefreshToken(user.Email),
+                RefreshToken = CreateRefreshToken(usuario.Email),
                 ExpiresIn = (long)TimeSpan.FromMinutes(_settings.ValidForMinutes).TotalSeconds
             };
         }

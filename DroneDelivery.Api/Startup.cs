@@ -102,9 +102,11 @@ namespace DroneDelivery.Api
 
             services.AddScoped<JwtSettings>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IPasswordHasher<Cliente>, PasswordHasher<Cliente>>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.Configure<BaseDroneConfig>(Configuration.GetSection("BaseDrone"));
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

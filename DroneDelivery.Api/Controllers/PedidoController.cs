@@ -11,15 +11,11 @@ using System.Threading.Tasks;
 namespace DroneDelivery.Api.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class PedidoController : ControllerBase
+    public class PedidoController : BaseController
     {
-        private readonly IMediator _mediator;
-
         public PedidoController(IMediator mediator)
+            : base(mediator)
         {
-            _mediator = mediator;
         }
 
         [HttpGet]
@@ -29,10 +25,10 @@ namespace DroneDelivery.Api.Controllers
         public async Task<ActionResult<IEnumerable<PedidoModel>>> ObterTodos()
         {
             var response = await _mediator.Send(new ListarPedidosQuery());
-            if (response.HasFails)
-                return BadRequest(response.Fails);
 
-            return Ok(response.Data);
+            return response.HasFails
+                ? (ActionResult<IEnumerable<PedidoModel>>)BadRequest(response.Fails)
+                : Ok(response.Data);
         }
 
 
@@ -58,12 +54,8 @@ namespace DroneDelivery.Api.Controllers
         public async Task<IActionResult> Adicionar(CriarPedidoCommand command)
         {
             var response = await _mediator.Send(command);
-            if (response.HasFails)
-                return BadRequest(response.Fails);
 
-            return Ok();
+            return response.HasFails ? (IActionResult)BadRequest(response.Fails) : Ok();
         }
-
-
     }
 }

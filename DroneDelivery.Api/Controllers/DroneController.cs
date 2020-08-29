@@ -11,15 +11,11 @@ using System.Threading.Tasks;
 namespace DroneDelivery.Api.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DroneController : ControllerBase
+    public class DroneController : BaseController
     {
-        private readonly IMediator _mediator;
-
         public DroneController(IMediator mediator)
+            : base(mediator)
         {
-            _mediator = mediator;
         }
 
         [HttpGet]
@@ -28,7 +24,7 @@ namespace DroneDelivery.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<DroneModel>>> ObterTodos()
         {
-            var response = await _mediator.Send(new ListarDronesQuery());
+            var response = await this._mediator.Send(new ListarDronesQuery());
             if (response.HasFails)
                 return BadRequest(response.Fails);
 
@@ -41,7 +37,7 @@ namespace DroneDelivery.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<DroneSituacaoModel>>> ObterSituacaoDrones()
         {
-            var response = await _mediator.Send(new ListarSituacaoDronesQuery());
+            var response = await this._mediator.Send(new ListarSituacaoDronesQuery());
             if (response.HasFails)
                 return BadRequest(response.Fails);
 
@@ -70,12 +66,11 @@ namespace DroneDelivery.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Adicionar(CriarDroneCommand command)
         {
-            var response = await _mediator.Send(command);
+            var response = await this._mediator.Send(command);
             if (response.HasFails)
                 return BadRequest(response.Fails);
 
             return Ok();
         }
-
     }
 }

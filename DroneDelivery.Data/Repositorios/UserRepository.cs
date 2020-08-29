@@ -18,26 +18,26 @@ namespace DroneDelivery.Data.Repositorios
         }
 
 
-        public async Task<IEnumerable<User>> ObterAsync()
+        public async Task<IEnumerable<Cliente>> ObterAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Clientes.ToListAsync();
         }
 
-        public async Task<User> ObterAsync(Guid id)
+        public async Task<Cliente> ObterAsync(Guid id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Clientes.FirstOrDefaultAsync(x => x.Id == id);
         }
 
 
-        public async Task AdicionarAsync(User user)
+        public async Task AdicionarAsync(Cliente usuario)
         {
-            await _context.Users.AddAsync(user);
+            await _context.Clientes.AddAsync(usuario);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> ObterPorEmailAsync(string email)
+        public async Task<Cliente> ObterPorEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.Clientes.FirstOrDefaultAsync(x => x.Email == email);
         }
     }
 }

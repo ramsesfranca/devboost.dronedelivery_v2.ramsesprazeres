@@ -7,31 +7,17 @@ namespace DroneDelivery.Domain.Entidades
     public class Pedido : EntidadeBase<Guid>
     {
         public double Peso { get; private set; }
-
         public DateTime DataPedido { get; private set; }
-
-        public double Latitude { get; private set; }
-        public double Longitude { get; private set; }
         public PedidoStatus Status { get; private set; }
-
         public Guid? DroneId { get; private set; }
+        public Guid? ClienteId { get; private set; }
         public Drone Drone { get; private set; }
-
-        protected Pedido() { }
-
-        public Pedido(double peso, double latitude, double longitude, PedidoStatus status)
-        {
-            Peso = peso;
-            Longitude = longitude;
-            Latitude = latitude;
-            Status = status;
-        }
+        public Cliente Cliente { get; private set; }
 
         public void AtualizarStatusPedido(PedidoStatus status)
         {
             Status = status;
         }
-
 
         public bool ValidarPesoPedido(double peso)
         {
@@ -42,10 +28,5 @@ namespace DroneDelivery.Domain.Entidades
         {
             DroneId = droneId;
         }
-
-
-
-
-
     }
 }

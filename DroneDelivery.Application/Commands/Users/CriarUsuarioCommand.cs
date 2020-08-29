@@ -18,7 +18,7 @@ namespace DroneDelivery.Application.Commands.Users
         {
             AddNotifications(new Contract()
                 .Requires()
-                .IsNotNullOrEmpty(Username, nameof(Username), "O Username não pode ser vazio"));
+                .IsNotNullOrEmpty(Username, nameof(Username), "O Nome não pode ser vazio"));
 
             AddNotifications(new Contract()
                 .Requires()

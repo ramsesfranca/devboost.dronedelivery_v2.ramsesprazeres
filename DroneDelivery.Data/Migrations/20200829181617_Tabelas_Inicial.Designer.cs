@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DroneDelivery.Data.Migrations
 {
     [DbContext(typeof(DroneDbContext))]
-    [Migration("20200829130952_AddUser")]
-    partial class AddUser
+    [Migration("20200829181617_Tabelas_Inicial")]
+    partial class Tabelas_Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,35 @@ namespace DroneDelivery.Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("DroneDelivery.Domain.Entidades.Cliente", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Senha")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clientes");
+                });
 
             modelBuilder.Entity("DroneDelivery.Domain.Entidades.Drone", b =>
                 {
@@ -80,17 +109,14 @@ namespace DroneDelivery.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ClienteId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("DroneId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
 
                     b.Property<double>("Peso")
                         .HasColumnType("float");
@@ -100,32 +126,11 @@ namespace DroneDelivery.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteId");
+
                     b.HasIndex("DroneId");
 
                     b.ToTable("Pedidos");
-                });
-
-            modelBuilder.Entity("DroneDelivery.Domain.Entidades.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("DroneDelivery.Domain.Entidades.HistoricoPedido", b =>
@@ -145,6 +150,10 @@ namespace DroneDelivery.Data.Migrations
 
             modelBuilder.Entity("DroneDelivery.Domain.Entidades.Pedido", b =>
                 {
+                    b.HasOne("DroneDelivery.Domain.Entidades.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId");
+
                     b.HasOne("DroneDelivery.Domain.Entidades.Drone", "Drone")
                         .WithMany("Pedidos")
                         .HasForeignKey("DroneId");

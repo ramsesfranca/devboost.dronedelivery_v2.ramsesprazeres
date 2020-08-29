@@ -58,7 +58,6 @@ namespace DroneDelivery.Domain.Entidades
             return tempoEmMinutos <= Autonomia;
         }
 
-
         public bool ValidarAutonomiaSobraPorPontoEntrega(ITempoEntregaService tempoEntregaService, double latitudeInicial, double longitudeInicial, double latitudePedido, double longitudePedido)
         {
             var ultimaLatitude = latitudeInicial;
@@ -68,9 +67,9 @@ namespace DroneDelivery.Domain.Entidades
             double tempoEntregaAtual = 0;
             foreach (var pedido in Pedidos.Where(x => x.Status == PedidoStatus.EmEntrega))
             {
-                tempoEntregaAtual += tempoEntregaService.ObterTempoEntregaEmMinutosIda(ultimaLatitude, ultimaLongitude, pedido.Latitude, pedido.Longitude, Velocidade);
-                ultimaLatitude = pedido.Latitude;
-                ultimaLongitude = pedido.Longitude;
+                tempoEntregaAtual += tempoEntregaService.ObterTempoEntregaEmMinutosIda(ultimaLatitude, ultimaLongitude, pedido.Cliente.Latitude, pedido.Cliente.Longitude, Velocidade);
+                ultimaLatitude = pedido.Cliente.Latitude;
+                ultimaLongitude = pedido.Cliente.Longitude;
             }
 
             //ida do ultimo pedido até o novo pedido
@@ -89,8 +88,6 @@ namespace DroneDelivery.Domain.Entidades
             return (autonomialAtual - tempoEntregaAtual) >= 0;
         }
 
-
-
         public bool VerificarDroneAceitaOPesoPedido(double pesoPedido)
         {
             return Capacidade >= pesoPedido;
@@ -106,6 +103,5 @@ namespace DroneDelivery.Domain.Entidades
         {
             Pedidos = Pedidos.Where(x => x.Status == PedidoStatus.EmEntrega).ToList();
         }
-
     }
 }
