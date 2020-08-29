@@ -1,5 +1,4 @@
-﻿using DroneDelivery.Application.Commands;
-using DroneDelivery.Application.Commands.Users;
+﻿using DroneDelivery.Application.Commands.Users;
 using DroneDelivery.Application.Response;
 using MediatR;
 using Microsoft.AspNetCore.Http;

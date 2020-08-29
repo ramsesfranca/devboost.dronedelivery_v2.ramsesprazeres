@@ -1,5 +1,4 @@
-﻿using DroneDelivery.Domain.Enum;
-using System;
+﻿using System;
 
 namespace DroneDelivery.Application.Models
 {

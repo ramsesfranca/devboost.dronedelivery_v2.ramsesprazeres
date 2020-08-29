@@ -1,7 +1,6 @@
 ﻿using DroneDelivery.Application.Mediatr.Request;
 using DroneDelivery.Application.Response;
 using Flunt.Validations;
-using System;
 
 namespace DroneDelivery.Application.Commands.Pedidos
 {

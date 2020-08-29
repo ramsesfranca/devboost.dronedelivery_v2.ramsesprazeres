@@ -5,7 +5,6 @@ using DroneDelivery.Application.Models;
 using DroneDelivery.Domain.Entidades;
 using DroneDelivery.Domain.Enum;
 using System;
-using System.Linq;
 
 namespace DroneDelivery.Application.AutoMapper
 {
@@ -19,7 +18,7 @@ namespace DroneDelivery.Application.AutoMapper
             CreateMap<CriarPedidoCommand, Pedido>()
                 .ForMember(d => d.DataPedido, o => o.MapFrom(x => DateTime.Now));
 
-   
+
             //Domain to Model
             CreateMap<Drone, DroneModel>()
                 .ForMember(d => d.Status, opts => opts.MapFrom(x => x.Status.ToString()));

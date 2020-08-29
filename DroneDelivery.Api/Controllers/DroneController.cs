@@ -1,13 +1,10 @@
 ﻿using DroneDelivery.Application.Commands.Drones;
-using DroneDelivery.Application.Interfaces;
 using DroneDelivery.Application.Models;
-using DroneDelivery.Application.Queries;
 using DroneDelivery.Application.Queries.Drones;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

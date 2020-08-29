@@ -1,5 +1,4 @@
-﻿using DroneDelivery.Domain.Core;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DroneDelivery.Domain.Entidades

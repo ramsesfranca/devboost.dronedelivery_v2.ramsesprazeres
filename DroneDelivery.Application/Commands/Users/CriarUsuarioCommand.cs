@@ -1,6 +1,5 @@
 ﻿using DroneDelivery.Application.Mediatr.Request;
 using DroneDelivery.Application.Response;
-using Flunt.Notifications;
 using Flunt.Validations;
 
 namespace DroneDelivery.Application.Commands.Users
