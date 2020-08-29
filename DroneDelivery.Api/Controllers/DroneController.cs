@@ -1,5 +1,8 @@
-﻿using DroneDelivery.Application.Interfaces;
+﻿using DroneDelivery.Application.Commands.Drones;
+using DroneDelivery.Application.Interfaces;
 using DroneDelivery.Application.Models;
+using DroneDelivery.Application.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,29 +17,37 @@ namespace DroneDelivery.Api.Controllers
     [Route("api/[controller]")]
     public class DroneController : ControllerBase
     {
-        private readonly IDroneService _droneService;
+        private readonly IMediator _mediator;
 
-        public DroneController(IDroneService droneService)
+        public DroneController(IMediator mediator)
         {
-            _droneService = droneService;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<DroneModel>> Obter()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<DroneModel>>> Obter()
         {
-            return await _droneService.ObterAsync();
+            var response = await _mediator.Send(new ListarDronesQuery());
+            if (response.HasFails)
+                return BadRequest(response.Fails);
+
+            return Ok(response.Data);
         }
 
         [HttpGet("situacao")]
-        public async Task<IEnumerable<DroneSituacaoModel>> ListarDrones()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<DroneSituacaoModel>>> ListarDrones()
         {
-            return await _droneService.ListarDronesAsync();
-        }
+            var response = await _mediator.Send(new ListarSituacaoDronesQuery());
+            if (response.HasFails)
+                return BadRequest(response.Fails);
 
-        [HttpGet("situacao/{id}")]
-        public async Task<DroneSituacaoModel> ListarDrones(Guid id)
-        {
-            return await _droneService.ListarDroneAsync(id);
+            return Ok(response.Data);
         }
 
         /// <summary>
@@ -54,40 +65,36 @@ namespace DroneDelivery.Api.Controllers
         ///     }
         ///
         /// </remarks>        
-        /// <param name="createDroneModel"></param>  
+        /// <param name="command"></param>  
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Adicionar(CreateDroneModel createDroneModel)
+        public async Task<IActionResult> Adicionar(CriarDroneCommand command)
         {
-            try
-            {
-                await _droneService.AdicionarAsync(createDroneModel);
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            var response = await _mediator.Send(command);
+            if (response.HasFails)
+                return BadRequest(response.Fails);
+
+            return Ok();
         }
 
-        [HttpPost("{id}/pedidos")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> LiberarDrones(Guid id)
-        {
-            try
-            {
-                await _droneService.AtualizarPedidosEntregues(id);
+        //[HttpPost("{id}/pedidos")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public async Task<IActionResult> LiberarDrones(Guid id)
+        //{
+        //    try
+        //    {
+        //        await _droneService.AtualizarPedidosEntregues(id);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
-        }
+        //        return Ok();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(500);
+        //    }
+        //}
 
     }
 }

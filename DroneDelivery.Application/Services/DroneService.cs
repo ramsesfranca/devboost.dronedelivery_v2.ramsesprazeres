@@ -22,8 +22,6 @@ namespace DroneDelivery.Application.Services
             _mapper = mapper;
         }
 
-        public IMapper Mapper { get; }
-
         public async Task AdicionarAsync(CreateDroneModel createDroneModel)
         {
             var drone = _mapper.Map<CreateDroneModel, Drone>(createDroneModel);

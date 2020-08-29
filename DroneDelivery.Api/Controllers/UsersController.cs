@@ -1,7 +1,9 @@
-﻿using DroneDelivery.Application.Models;
+﻿using DroneDelivery.Application.Commands;
+using DroneDelivery.Application.Commands.Users;
 using DroneDelivery.Application.Response;
-using Microsoft.AspNetCore.Mvc;
+using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace DroneDelivery.Api.Controllers
@@ -10,39 +12,37 @@ namespace DroneDelivery.Api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IMediator _mediator;
 
-        public UsersController(IUserService userService)
+        public UsersController(IMediator mediator)
         {
-            _userService = userService;
+            _mediator = mediator;
+        }
+
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(System.Collections.Generic.IReadOnlyCollection<Flunt.Notifications.Notification>), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<ResponseVal>> Login([FromBody] LoginUsuarioCommand command)
+        {
+            var response = await _mediator.Send(command);
+            if (response.HasFails)
+                return BadRequest(response.Fails);
+
+            return Ok(response.Data);
         }
 
         [HttpPost("registrar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(System.Collections.Generic.IReadOnlyCollection<Flunt.Notifications.Notification>), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<ResponseVal>> Post([FromBody] CreateUserModel createUserModel)
+        public async Task<ActionResult> Post([FromBody] CriarUsuarioCommand command)
         {
-            var response = await _userService.CriarUsuario(createUserModel);
+            var response = await _mediator.Send(command);
             if (response.HasFails)
                 return BadRequest(response.Fails);
 
-            return Ok(response.Data);
-        }
-
-
-        [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(System.Collections.Generic.IReadOnlyCollection<Flunt.Notifications.Notification>), StatusCodes.Status400BadRequest)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<ResponseVal>> Login(LoginModel loginModel)
-        {
-            var response = await _userService.Authentication(loginModel);
-
-            if (response.HasFails)
-                return BadRequest(response.Fails);
-
-            return Ok(response.Data);
+            return Ok();
         }
 
     }

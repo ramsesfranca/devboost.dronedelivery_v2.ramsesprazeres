@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DroneDelivery.Application.Commands.Drones;
 using DroneDelivery.Application.Models;
 using DroneDelivery.Domain.Entidades;
 using DroneDelivery.Domain.Enum;
@@ -11,6 +12,9 @@ namespace DroneDelivery.Application.AutoMapper
     {
         public MappingProfile()
         {
+            //Commands 
+            CreateMap<CriarDroneCommand, Drone>()
+                .ForMember(d => d.Status, o => o.MapFrom(x => DroneStatus.Livre));
 
             //Model to Domain
             CreateMap<DroneModel, Drone>();
