@@ -34,11 +34,17 @@ namespace DroneDelivery.Application.Handlers.Drones
 
         public async Task<ResponseVal> Handle(CriarPedidoCommand request, CancellationToken cancellationToken)
         {
+            request.Validate();
+            if (request.Notifications.Any())
+            {
+                _response.AddNotifications(request.Notifications);
+                return _response;
+            }
+
             var pedido = _mapper.Map<CriarPedidoCommand, Pedido>(request);
 
             if (!pedido.ValidarPesoPedido(Utility.Utils.CARGA_MAXIMA_GRAMAS))
                 _response.AddNotification(new Notification("pedido", $"capacidade do pedido não pode ser maior que {Utility.Utils.CARGA_MAXIMA_GRAMAS / 1000} KGs"));
-
 
             // temos que procurar drones disponiveis
             Drone droneDisponivel = null;

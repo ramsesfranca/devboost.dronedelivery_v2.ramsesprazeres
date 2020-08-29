@@ -7,6 +7,7 @@ using DroneDelivery.Domain.Entidades;
 using Flunt.Notifications;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,18 +17,23 @@ namespace DroneDelivery.Application.Handlers.Users
     {
 
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ITokenService _tokenService;
         private readonly IPasswordHasher<User> _passwordHasher;
 
-        public CriarUsuarioHandler(IUnitOfWork unitOfWork, ITokenService tokenService, IPasswordHasher<User> passwordHasher)
+        public CriarUsuarioHandler(IUnitOfWork unitOfWork, IPasswordHasher<User> passwordHasher)
         {
             _unitOfWork = unitOfWork;
-            _tokenService = tokenService;
             _passwordHasher = passwordHasher;
         }
 
         public async Task<ResponseVal> Handle(CriarUsuarioCommand request, CancellationToken cancellationToken)
         {
+            request.Validate();
+            if (request.Notifications.Any())
+            {
+                _response.AddNotifications(request.Notifications);
+                return _response;
+            }
+
             var user = await _unitOfWork.Users.ObterPorEmailAsync(request.Email);
 
             // Verifica se o usuário existe

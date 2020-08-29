@@ -7,6 +7,7 @@ using DroneDelivery.Domain.Entidades;
 using Flunt.Notifications;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,6 +29,14 @@ namespace DroneDelivery.Application.Handlers.Users
 
         public async Task<ResponseVal> Handle(LoginUsuarioCommand request, CancellationToken cancellationToken)
         {
+            request.Validate();
+            if (request.Notifications.Any())
+            {
+                _response.AddNotifications(request.Notifications);
+                return _response;
+            }
+
+
             // Recupera o usuário
             var user = await _unitOfWork.Users.ObterPorEmailAsync(request.Email);
 
