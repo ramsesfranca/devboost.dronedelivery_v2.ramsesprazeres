@@ -41,6 +41,7 @@ namespace DroneDelivery.Application.Handlers.Pedidos
         public async Task<ResponseVal> Handle(CriarPedidoCommand request, CancellationToken cancellationToken)
         {
             request.Validate();
+
             if (request.Notifications.Any())
             {
                 this._response.AddNotifications(request.Notifications);
@@ -110,6 +111,7 @@ namespace DroneDelivery.Application.Handlers.Pedidos
             else
             {
                 pedido.AssociarDrone(droneDisponivel.Id);
+                pedido.AssociarCliente(cliente.Id);
                 pedido.AtualizarStatusPedido(PedidoStatus.EmEntrega);
             }
 

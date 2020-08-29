@@ -13,8 +13,8 @@ namespace DroneDelivery.Domain.Entidades
         public string Senha { get; set; }
         public string Role { get; set; }
         public string Email { get; set; }
-        public double Latitude { get; private set; }
-        public double Longitude { get; private set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         public IEnumerable<string> Roles => _roles;
         public IEnumerable<string> Permissions => _permissions;

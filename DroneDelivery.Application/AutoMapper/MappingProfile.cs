@@ -18,7 +18,6 @@ namespace DroneDelivery.Application.AutoMapper
             CreateMap<CriarPedidoCommand, Pedido>()
                 .ForMember(d => d.DataPedido, o => o.MapFrom(x => DateTime.Now));
 
-
             //Domain to Model
             CreateMap<Drone, DroneModel>()
                 .ForMember(d => d.Status, opts => opts.MapFrom(x => x.Status.ToString()));
@@ -30,6 +29,5 @@ namespace DroneDelivery.Application.AutoMapper
                 .ForMember(d => d.Situacao, opts => opts.MapFrom(x => x.Status.ToString()))
                 .ForMember(d => d.Pedidos, opts => opts.MapFrom(x => x.Pedidos));
         }
-
     }
 }

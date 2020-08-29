@@ -27,6 +27,7 @@ namespace DroneDelivery.Application.Handlers.Users
         public async Task<ResponseVal> Handle(CriarUsuarioCommand request, CancellationToken cancellationToken)
         {
             request.Validate();
+
             if (request.Notifications.Any())
             {
                 _response.AddNotifications(request.Notifications);
@@ -45,13 +46,14 @@ namespace DroneDelivery.Application.Handlers.Users
             user = new Cliente
             {
                 Email = request.Email,
-                Nome = request.Username,
+                Nome = request.Nome,
                 Role = request.Role,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude
             };
 
             //hash password
-            var passwordHash = _passwordHasher.HashPassword(user, request.Password);
-            user.Senha = passwordHash;
+            user.Senha = _passwordHasher.HashPassword(user, request.Senha);
 
             await _unitOfWork.Users.AdicionarAsync(user);
             await _unitOfWork.SaveAsync();

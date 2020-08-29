@@ -28,5 +28,10 @@ namespace DroneDelivery.Domain.Entidades
         {
             DroneId = droneId;
         }
+
+        public void AssociarCliente(Guid clienteId)
+        {
+            ClienteId = clienteId;
+        }
     }
 }
