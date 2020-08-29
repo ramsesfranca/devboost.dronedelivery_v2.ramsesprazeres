@@ -8,9 +8,14 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+    <UserSecretsId>2c574918-231f-4467-b6d4-9f84ba77e48b</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/68ca1a45-ff2c-46ac-8091-b1bc079b4b4a/resourceGroups/DroneDelivery/providers/microsoft.insights/components/DevBoost.Drone</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.0" />
+    <PackageReference Include="Azure.Identity" Version="1.1.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DroneDelivery.Application\DroneDelivery.Application.csproj" />
     <ProjectReference Include="..\DroneDelivery.Data\DroneDelivery.Data.csproj" />
+    <ProjectReference Include="..\DroneDelivery.Infra\DroneDelivery.Infra.csproj" />
   </ItemGroup>
 
 

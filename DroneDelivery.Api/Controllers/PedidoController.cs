@@ -2,6 +2,7 @@
 using DroneDelivery.Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace DroneDelivery.Api.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST /pedido
+        ///     POST /api/pedido
         ///     {
         ///        "peso": 10,
         ///        "latitude": -23.5753639,
@@ -39,18 +40,27 @@ namespace DroneDelivery.Api.Controllers
         ///     }
         ///
         /// </remarks>        
-        /// <param name="pedidoModel"></param>  
+        /// <param name="createPedidoModel"></param>  
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Adicionar(PedidoModel pedidoModel)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Adicionar(CreatePedidoModel createPedidoModel)
         {
-            var response = await _pedidoService.AdicionarAsync(pedidoModel);
 
-            if (!response)
-                return BadRequest();
+            try
+            {
+                var response = await _pedidoService.AdicionarAsync(createPedidoModel);
 
-            return Ok();
+                if (!response)
+                    return BadRequest();
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
 
 

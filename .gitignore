@@ -1,6 +1,10 @@
 # Application
 *.db
+appsettings.Production.json
 publish
+PublishProfiles
+ServiceDependencies
+serviceDependencies.*
 
 # misc
 .DS_Store

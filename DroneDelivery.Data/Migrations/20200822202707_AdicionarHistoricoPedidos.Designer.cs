@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DroneDelivery.Data.Migrations
 {
     [DbContext(typeof(DroneDbContext))]
-    [Migration("20200822150935_AdicionarHoraCarregamentoDrone")]
-    partial class AdicionarHoraCarregamentoDrone
+    [Migration("20200822202707_AdicionarHistoricoPedidos")]
+    partial class AdicionarHistoricoPedidos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,6 +50,33 @@ namespace DroneDelivery.Data.Migrations
                     b.ToTable("Drones");
                 });
 
+            modelBuilder.Entity("DroneDelivery.Domain.Entidades.HistoricoPedido", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DataEntrega")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataSaida")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DroneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PedidoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DroneId");
+
+                    b.HasIndex("PedidoId");
+
+                    b.ToTable("HistoricoPedidos");
+                });
+
             modelBuilder.Entity("DroneDelivery.Domain.Entidades.Pedido", b =>
                 {
                     b.Property<Guid>("Id")
@@ -81,10 +108,21 @@ namespace DroneDelivery.Data.Migrations
                     b.ToTable("Pedidos");
                 });
 
-            modelBuilder.Entity("DroneDelivery.Domain.Entidades.Pedido", b =>
+            modelBuilder.Entity("DroneDelivery.Domain.Entidades.HistoricoPedido", b =>
                 {
                     b.HasOne("DroneDelivery.Domain.Entidades.Drone", "Drone")
                         .WithMany()
+                        .HasForeignKey("DroneId");
+
+                    b.HasOne("DroneDelivery.Domain.Entidades.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId");
+                });
+
+            modelBuilder.Entity("DroneDelivery.Domain.Entidades.Pedido", b =>
+                {
+                    b.HasOne("DroneDelivery.Domain.Entidades.Drone", "Drone")
+                        .WithMany("Pedidos")
                         .HasForeignKey("DroneId");
                 });
 #pragma warning restore 612, 618

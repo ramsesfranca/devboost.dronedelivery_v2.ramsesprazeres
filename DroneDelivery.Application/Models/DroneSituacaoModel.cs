@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DroneDelivery.Application.Models
 {
@@ -8,7 +9,7 @@ namespace DroneDelivery.Application.Models
 
         public string Situacao { get; set; }
 
-        public Guid PedidoId { get; set; }
+        public IEnumerable<DronePedidoModel> Pedidos { get; set; }
 
     }
 }

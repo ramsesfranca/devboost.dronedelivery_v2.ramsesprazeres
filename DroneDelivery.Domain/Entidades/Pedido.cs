@@ -1,6 +1,5 @@
 ﻿using DroneDelivery.Domain.Core;
 using DroneDelivery.Domain.Enum;
-using Geolocation;
 using System;
 
 namespace DroneDelivery.Domain.Entidades
@@ -15,15 +14,14 @@ namespace DroneDelivery.Domain.Entidades
         public double Longitude { get; private set; }
         public PedidoStatus Status { get; private set; }
 
-        public Guid? DroneId { get; set; }
-        public Drone Drone { get; set; }
+        public Guid? DroneId { get; private set; }
+        public Drone Drone { get; private set; }
 
         protected Pedido() { }
 
-        public Pedido(double peso, DateTime dataPedido, double latitude, double longitude, PedidoStatus status)
+        public Pedido(double peso, double latitude, double longitude, PedidoStatus status)
         {
             Peso = peso;
-            DataPedido = dataPedido;
             Longitude = longitude;
             Latitude = latitude;
             Status = status;
@@ -35,26 +33,17 @@ namespace DroneDelivery.Domain.Entidades
         }
 
 
-        public bool ValidarPesoPedido(double carga)
+        public bool ValidarPesoPedido(double peso)
         {
-            return Peso < carga;
+            return Peso < peso;
         }
 
-        public bool ValidarDistanciaEntrega(double latitudeInicial, double longitudeInicial, double velocidadeDrone, double autonomiaDrone)
+        public void AssociarDrone(Guid droneId)
         {
-            double distance = GeoCalculator.GetDistance(latitudeInicial, longitudeInicial, Latitude, Longitude, 1, DistanceUnit.Meters);
-            if (distance <= 0)
-                return false;
-
-            //velocidade em m/s
-            //T = d / v
-            var tempoEmMinutos = ((distance * 2) / velocidadeDrone) / 60;
-
-            if (tempoEmMinutos > autonomiaDrone)
-                return false;
-
-            return true;
+            DroneId = droneId;
         }
+
+
 
 
 

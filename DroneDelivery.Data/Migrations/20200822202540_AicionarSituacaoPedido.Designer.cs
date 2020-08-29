@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DroneDelivery.Data.Migrations
 {
     [DbContext(typeof(DroneDbContext))]
-    [Migration("20200822135324_AdicionarTabelasDroneEPedido")]
-    partial class AdicionarTabelasDroneEPedido
+    [Migration("20200822202540_AicionarSituacaoPedido")]
+    partial class AicionarSituacaoPedido
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,6 +36,9 @@ namespace DroneDelivery.Data.Migrations
                     b.Property<double>("Carga")
                         .HasColumnType("float");
 
+                    b.Property<DateTime?>("HoraCarregamento")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -56,6 +59,9 @@ namespace DroneDelivery.Data.Migrations
                     b.Property<DateTime>("DataPedido")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("DroneId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
 
@@ -70,7 +76,16 @@ namespace DroneDelivery.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DroneId");
+
                     b.ToTable("Pedidos");
+                });
+
+            modelBuilder.Entity("DroneDelivery.Domain.Entidades.Pedido", b =>
+                {
+                    b.HasOne("DroneDelivery.Domain.Entidades.Drone", "Drone")
+                        .WithMany("Pedidos")
+                        .HasForeignKey("DroneId");
                 });
 #pragma warning restore 612, 618
         }

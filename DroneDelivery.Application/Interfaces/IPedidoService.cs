@@ -11,7 +11,7 @@ namespace DroneDelivery.Application.Interfaces
 
         Task<PedidoModel> ObterAsync(Guid id);
 
-        Task<bool> AdicionarAsync(PedidoModel pedidoModel);
+        Task<bool> AdicionarAsync(CreatePedidoModel createPedidoModel);
 
         Task RemoverAsync(Guid id);
         Task Remover(PedidoModel pedidoModel);

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DroneDelivery.Data.Migrations
 {
     [DbContext(typeof(DroneDbContext))]
-    [Migration("20200822141512_RelacionarDroneAoPedido")]
-    partial class RelacionarDroneAoPedido
+    [Migration("20200822180012_AddTablesTODB")]
+    partial class AddTablesTODB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,6 +35,9 @@ namespace DroneDelivery.Data.Migrations
 
                     b.Property<double>("Carga")
                         .HasColumnType("float");
+
+                    b.Property<DateTime?>("HoraCarregamento")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -81,7 +84,7 @@ namespace DroneDelivery.Data.Migrations
             modelBuilder.Entity("DroneDelivery.Domain.Entidades.Pedido", b =>
                 {
                     b.HasOne("DroneDelivery.Domain.Entidades.Drone", "Drone")
-                        .WithMany()
+                        .WithMany("Pedidos")
                         .HasForeignKey("DroneId");
                 });
 #pragma warning restore 612, 618

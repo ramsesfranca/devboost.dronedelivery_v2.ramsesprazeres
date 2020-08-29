@@ -1,29 +1,28 @@
-﻿using DroneDelivery.Domain.Enum;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
 
 namespace DroneDelivery.Application.Models
 {
-    public class DroneModel
+    public class CreateDroneModel
     {
-        public Guid Id { get; set; }
         public double Capacidade { get; set; }
-        public double Velocidade { get; set; }
-        public double Autonomia { get; set; }
-        public double Carga { get; set; }
-        public DroneStatus Status { get; set; }
 
-        public DroneModel() { }
+        public double Velocidade { get; set; }
+
+        public double Autonomia { get; set; }
+
+        public double Carga { get; set; }
+
+
+        public CreateDroneModel() { }
 
         [JsonConstructor]
-        public DroneModel(Guid id, double capacidade, double velocidade, double autonomia, double carga, DroneStatus status)
+        public CreateDroneModel(double capacidade, double velocidade, double autonomia, double carga)
         {
-            Id = id;
             Capacidade = capacidade;
             Velocidade = velocidade;
             Autonomia = autonomia;
             Carga = carga;
-            Status = status;
         }
+
     }
 }

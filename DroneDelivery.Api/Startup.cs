@@ -5,6 +5,8 @@ using DroneDelivery.Data.Data;
 using DroneDelivery.Data.Repositorios;
 using DroneDelivery.Data.Repositorios.IRepository;
 using DroneDelivery.Domain.Interfaces;
+using DroneDelivery.Infra;
+using DroneDelivery.Infra.BaseDrone;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -59,14 +61,16 @@ namespace DroneDelivery.Api
 
             services.AddControllers();
 
-
             services.AddScoped<IDroneService, DroneService>();
             services.AddScoped<IPedidoService, PedidoService>();
-
-            services.AddScoped<IDroneRepository, DroneRepository>();
-            services.AddScoped<IPedidoRepository, PedidoRepository>();
+            services.AddScoped<ITempoEntregaService, TempoEntregaService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+            services.Configure<BaseDroneConfig>(Configuration.GetSection("BaseDrone"));
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            //services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

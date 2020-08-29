@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DroneDelivery.Data.Migrations
 {
-    public partial class AdicionarTabelasDroneEPedido : Migration
+    public partial class AddTablesTODB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,6 +16,7 @@ namespace DroneDelivery.Data.Migrations
                     Velocidade = table.Column<double>(nullable: false),
                     Autonomia = table.Column<double>(nullable: false),
                     Carga = table.Column<double>(nullable: false),
+                    HoraCarregamento = table.Column<DateTime>(nullable: true),
                     Status = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -32,21 +33,33 @@ namespace DroneDelivery.Data.Migrations
                     DataPedido = table.Column<DateTime>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
                     Longitude = table.Column<double>(nullable: false),
-                    Status = table.Column<int>(nullable: false)
+                    Status = table.Column<int>(nullable: false),
+                    DroneId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pedidos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Drones_DroneId",
+                        column: x => x.DroneId,
+                        principalTable: "Drones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_DroneId",
+                table: "Pedidos",
+                column: "DroneId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Drones");
+                name: "Pedidos");
 
             migrationBuilder.DropTable(
-                name: "Pedidos");
+                name: "Drones");
         }
     }
 }

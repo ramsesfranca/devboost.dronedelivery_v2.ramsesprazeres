@@ -4,10 +4,4 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="GeoAPI.Core" Version="1.7.5" />
-    <PackageReference Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
-    <PackageReference Include="Geolocation.NetStandard" Version="1.1.1" />
-  </ItemGroup>
-
 </Project>

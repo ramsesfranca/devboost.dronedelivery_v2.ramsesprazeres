@@ -9,11 +9,14 @@ namespace DroneDelivery.Domain.Interfaces
     {
         Task<IEnumerable<Drone>> ObterAsync();
 
+        Task<IEnumerable<Drone>> ObterDronesParaEntregaAsync();
+
         Task<Drone> ObterAsync(Guid id);
 
         Task AdicionarAsync(Drone drone);
 
         Task RemoverAsync(Guid id);
+
         void Remover(Drone drone);
 
     }

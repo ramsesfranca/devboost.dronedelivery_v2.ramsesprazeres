@@ -4,6 +4,7 @@ using DroneDelivery.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DroneDelivery.Data.Repositorios
@@ -44,6 +45,15 @@ namespace DroneDelivery.Data.Repositorios
             _context.Remove(pedido);
         }
 
+        public async Task CriarHistoricoPedidoAsync(IEnumerable<Pedido> pedidos)
+        {
+            foreach (var pedido in pedidos)
+                await _context.HistoricoPedidos.AddAsync(new HistoricoPedido(pedido.DroneId.GetValueOrDefault(), pedido.Id));
+        }
 
+        public async Task<IEnumerable<HistoricoPedido>> ObterPedidosDoDroneAsync(Guid droneId)
+        {
+            return await _context.HistoricoPedidos.Where(x => x.DroneId == droneId).ToListAsync();
+        }
     }
 }
