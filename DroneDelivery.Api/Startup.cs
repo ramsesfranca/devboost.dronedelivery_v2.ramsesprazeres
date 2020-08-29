@@ -1,22 +1,31 @@
+
 using AutoMapper;
+using DroneDelivery.Api.Filter;
 using DroneDelivery.Application.Interfaces;
+using DroneDelivery.Application.Response;
 using DroneDelivery.Application.Services;
 using DroneDelivery.Data.Data;
 using DroneDelivery.Data.Repositorios;
 using DroneDelivery.Data.Repositorios.IRepository;
+using DroneDelivery.Domain.Entidades;
 using DroneDelivery.Domain.Interfaces;
 using DroneDelivery.Infra;
 using DroneDelivery.Infra.BaseDrone;
+using DroneDelivery.Infra.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace DroneDelivery.Api
 {
@@ -49,13 +58,39 @@ namespace DroneDelivery.Api
                         Name = "Grupo 5",
                     }
                 });
+                opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Por favor insira um JWT com \"Bearer\" nesse campo",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                opts.OperationFilter<AuthOperationFilter>();
+
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 opts.IncludeXmlComments(xmlPath);
             });
 
-
+            var key = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtSettings:SigningKey").Value);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             services.AddAutoMapper(typeof(DroneService).Assembly);
 
@@ -65,12 +100,15 @@ namespace DroneDelivery.Api
             services.AddScoped<IPedidoService, PedidoService>();
             services.AddScoped<ITempoEntregaService, TempoEntregaService>();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<JwtSettings>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.Configure<BaseDroneConfig>(Configuration.GetSection("BaseDrone"));
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-            //services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +131,7 @@ namespace DroneDelivery.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

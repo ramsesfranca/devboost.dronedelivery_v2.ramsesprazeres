@@ -15,12 +15,15 @@ namespace DroneDelivery.Data.Repositorios
             _context = context;
             Pedidos = new PedidoRepository(_context);
             Drones = new DroneRepository(_context);
+            Users = new UserRepository(_context);
         }
 
 
         public IPedidoRepository Pedidos { get; private set; }
 
         public IDroneRepository Drones { get; private set; }
+
+        public IUserRepository Users { get; private set; }
 
         public void Dispose()
         {
