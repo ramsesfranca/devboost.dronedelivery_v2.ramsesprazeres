@@ -10,6 +10,5 @@ namespace DroneDelivery.Application.Models
         public string Situacao { get; set; }
 
         public IEnumerable<DronePedidoModel> Pedidos { get; set; }
-
     }
 }

@@ -28,6 +28,8 @@ namespace DroneDelivery.Application.AutoMapper
             CreateMap<Drone, DroneSituacaoModel>()
                 .ForMember(d => d.Situacao, opts => opts.MapFrom(x => x.Status.ToString()))
                 .ForMember(d => d.Pedidos, opts => opts.MapFrom(x => x.Pedidos));
+
+            CreateMap<Cliente, ClienteModel>();
         }
     }
 }

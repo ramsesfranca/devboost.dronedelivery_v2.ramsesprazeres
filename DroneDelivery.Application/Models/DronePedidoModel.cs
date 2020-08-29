@@ -6,5 +6,6 @@ namespace DroneDelivery.Application.Models
     {
         public Guid Id { get; set; }
 
+        public ClienteModel Cliente { get; set; }
     }
 }

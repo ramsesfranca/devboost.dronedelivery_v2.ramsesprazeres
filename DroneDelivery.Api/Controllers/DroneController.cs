@@ -25,12 +25,13 @@ namespace DroneDelivery.Api.Controllers
         public async Task<ActionResult<IEnumerable<DroneModel>>> ObterTodos()
         {
             var response = await this._mediator.Send(new ListarDronesQuery());
-            if (response.HasFails)
-                return BadRequest(response.Fails);
 
-            return Ok(response.Data);
+            return response.HasFails
+                ? (ActionResult<IEnumerable<DroneModel>>)BadRequest(response.Fails)
+                : Ok(response.Data);
         }
 
+        [AllowAnonymous]
         [HttpGet("situacao")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -38,10 +39,10 @@ namespace DroneDelivery.Api.Controllers
         public async Task<ActionResult<IEnumerable<DroneSituacaoModel>>> ObterSituacaoDrones()
         {
             var response = await this._mediator.Send(new ListarSituacaoDronesQuery());
-            if (response.HasFails)
-                return BadRequest(response.Fails);
 
-            return Ok(response.Data);
+            return response.HasFails
+                ? (ActionResult<IEnumerable<DroneSituacaoModel>>)BadRequest(response.Fails)
+                : Ok(response.Data);
         }
 
         /// <summary>
@@ -67,10 +68,8 @@ namespace DroneDelivery.Api.Controllers
         public async Task<IActionResult> Adicionar(CriarDroneCommand command)
         {
             var response = await this._mediator.Send(command);
-            if (response.HasFails)
-                return BadRequest(response.Fails);
 
-            return Ok();
+            return response.HasFails ? (IActionResult)BadRequest(response.Fails) : Ok();
         }
     }
 }
