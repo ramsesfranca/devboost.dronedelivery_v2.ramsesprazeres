@@ -1,27 +1,29 @@
 ﻿using AutoMapper;
-using DroneDelivery.Application.Interfaces;
-using DroneDelivery.Application.Models;
+using DroneDelivery.Application.Commands.Pedidos;
+using DroneDelivery.Application.Response;
+using DroneDelivery.Application.Validador;
 using DroneDelivery.Data.Repositorios.IRepository;
 using DroneDelivery.Domain.Entidades;
 using DroneDelivery.Domain.Enum;
 using DroneDelivery.Domain.Interfaces;
 using DroneDelivery.Infra.BaseDrone;
+using Flunt.Notifications;
+using MediatR;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace DroneDelivery.Application.Services
+namespace DroneDelivery.Application.Handlers.Drones
 {
-    public class PedidoService : IPedidoService
+    public class CriarPedidoHandler : ValidatorResponse, IRequestHandler<CriarPedidoCommand, ResponseVal>
     {
         private readonly ITempoEntregaService _calcularDistancia;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IOptions<BaseDroneConfig> _config;
 
-        public PedidoService(IUnitOfWork unitOfWork, IMapper mapper, IOptions<BaseDroneConfig> config, ITempoEntregaService calcularDistancia)
+        public CriarPedidoHandler(IUnitOfWork unitOfWork, IMapper mapper, IOptions<BaseDroneConfig> config, ITempoEntregaService calcularDistancia)
         {
             _calcularDistancia = calcularDistancia;
             _unitOfWork = unitOfWork;
@@ -29,14 +31,14 @@ namespace DroneDelivery.Application.Services
             _config = config;
         }
 
-        public IMapper Mapper { get; }
 
-        public async Task<bool> AdicionarAsync(CreatePedidoModel createPedidoModel)
+        public async Task<ResponseVal> Handle(CriarPedidoCommand request, CancellationToken cancellationToken)
         {
-            var pedido = _mapper.Map<CreatePedidoModel, Pedido>(createPedidoModel);
+            var pedido = _mapper.Map<CriarPedidoCommand, Pedido>(request);
 
             if (!pedido.ValidarPesoPedido(Utility.Utils.CARGA_MAXIMA_GRAMAS))
-                return false;
+                _response.AddNotification(new Notification("pedido", $"capacidade do pedido não pode ser maior que {Utility.Utils.CARGA_MAXIMA_GRAMAS / 1000} KGs"));
+
 
             // temos que procurar drones disponiveis
             Drone droneDisponivel = null;
@@ -46,20 +48,19 @@ namespace DroneDelivery.Application.Services
             var drones = await _unitOfWork.Drones.ObterAsync();
 
             if (drones.Count() == 0)
-                return false;
+                _response.AddNotification(new Notification("pedido", $"não existe drone cadastrado"));
+
+            if (_response.HasFails)
+                return _response;
 
             foreach (var drone in drones)
             {
 
-                //valida se algum drone tem autonomia para entregar o pedido
+                //valida se algum drone tem autonomia e aceita capacidade para entregar o pedido
                 var droneTemAutonomia = drone.ValidarAutonomia(_calcularDistancia, _config.Value.Latitude, _config.Value.Longitude, pedido.Latitude, pedido.Longitude);
-                if (!droneTemAutonomia)
-                    return false;
-
-                //verifica se algum drone aceita o peso
                 var droneAceitaPeso = drone.VerificarDroneAceitaOPesoPedido(pedido.Peso);
-                if (!droneAceitaPeso)
-                    return false;
+                if (!droneTemAutonomia || !droneAceitaPeso)
+                    continue;
 
                 //verificar se tem algum drone disponivel
                 if (drone.Status != DroneStatus.Livre)
@@ -86,42 +87,17 @@ namespace DroneDelivery.Application.Services
                 pedido.AssociarDrone(droneDisponivel.Id);
                 pedido.AtualizarStatusPedido(PedidoStatus.EmEntrega);
 
-                //v1 em grupo --- ja atualizava o status do drone
-                //droneDisponivel.AtualizarStatus(DroneStatus.EmEntrega);
             }
 
             await _unitOfWork.Pedidos.AdicionarAsync(pedido);
             await _unitOfWork.SaveAsync();
 
-            return true;
-        }
+            _response.AddValue(new
+            {
+                status = "ok"
+            });
 
-        public async Task<IEnumerable<PedidoModel>> ObterAsync()
-        {
-            var pedidos = await _unitOfWork.Pedidos.ObterAsync();
-
-            return _mapper.Map<IEnumerable<Pedido>, IEnumerable<PedidoModel>>(pedidos);
-        }
-
-        public async Task<PedidoModel> ObterAsync(Guid id)
-        {
-            var pedido = await _unitOfWork.Pedidos.ObterAsync(id);
-
-            return _mapper.Map<Pedido, PedidoModel>(pedido);
-        }
-
-        public async Task Remover(PedidoModel pedidoModel)
-        {
-            var pedido = _mapper.Map<PedidoModel, Pedido>(pedidoModel);
-
-            _unitOfWork.Pedidos.Remover(pedido);
-            await _unitOfWork.SaveAsync();
-        }
-
-        public async Task RemoverAsync(Guid id)
-        {
-            await _unitOfWork.Pedidos.RemoverAsync(id);
-            await _unitOfWork.SaveAsync();
+            return _response;
         }
     }
 }

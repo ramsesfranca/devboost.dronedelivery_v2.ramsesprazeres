@@ -4,7 +4,6 @@ using DroneDelivery.Application.Response;
 using DroneDelivery.Application.Validador;
 using DroneDelivery.Data.Repositorios.IRepository;
 using DroneDelivery.Domain.Entidades;
-using DroneDelivery.Domain.Enum;
 using Flunt.Notifications;
 using MediatR;
 using System.Threading;
@@ -26,7 +25,6 @@ namespace DroneDelivery.Application.Handlers.Drones
 
         public async Task<ResponseVal> Handle(CriarDroneCommand request, CancellationToken cancellationToken)
         {
-            // Verifica se o usuário existe
             if (request.Capacidade > Utility.Utils.CARGA_MAXIMA_GRAMAS)
             {
                 _response.AddNotification(new Notification("drone", $"capacidade do drone não pode ser maior que {Utility.Utils.CARGA_MAXIMA_GRAMAS / 1000} KGs"));

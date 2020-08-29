@@ -1,9 +1,9 @@
 ﻿using DroneDelivery.Application.Mediatr.Request;
 using DroneDelivery.Application.Response;
 
-namespace DroneDelivery.Application.Queries
+namespace DroneDelivery.Application.Queries.Pedidos
 {
-    public class ListarSituacaoDronesQuery : Request<ResponseVal>
+    public class ListarPedidosQuery : Request<ResponseVal>
     {
     }
 }

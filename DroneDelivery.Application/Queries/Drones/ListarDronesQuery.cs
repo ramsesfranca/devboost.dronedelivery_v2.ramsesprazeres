@@ -2,7 +2,7 @@
 using DroneDelivery.Application.Response;
 using System;
 
-namespace DroneDelivery.Application.Queries
+namespace DroneDelivery.Application.Queries.Drones
 {
     public class ListarDronesQuery : Request<ResponseVal>
     {

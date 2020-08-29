@@ -2,6 +2,7 @@
 using DroneDelivery.Application.Interfaces;
 using DroneDelivery.Application.Models;
 using DroneDelivery.Application.Queries;
+using DroneDelivery.Application.Queries.Drones;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,7 @@ namespace DroneDelivery.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DroneModel>>> Obter()
+        public async Task<ActionResult<IEnumerable<DroneModel>>> ObterTodos()
         {
             var response = await _mediator.Send(new ListarDronesQuery());
             if (response.HasFails)
@@ -41,7 +42,7 @@ namespace DroneDelivery.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DroneSituacaoModel>>> ListarDrones()
+        public async Task<ActionResult<IEnumerable<DroneSituacaoModel>>> ObterSituacaoDrones()
         {
             var response = await _mediator.Send(new ListarSituacaoDronesQuery());
             if (response.HasFails)
@@ -78,23 +79,6 @@ namespace DroneDelivery.Api.Controllers
 
             return Ok();
         }
-
-        //[HttpPost("{id}/pedidos")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> LiberarDrones(Guid id)
-        //{
-        //    try
-        //    {
-        //        await _droneService.AtualizarPedidosEntregues(id);
-
-        //        return Ok();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return StatusCode(500);
-        //    }
-        //}
 
     }
 }

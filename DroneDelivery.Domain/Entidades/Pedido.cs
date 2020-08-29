@@ -35,7 +35,7 @@ namespace DroneDelivery.Domain.Entidades
 
         public bool ValidarPesoPedido(double peso)
         {
-            return Peso < peso;
+            return peso >= Peso;
         }
 
         public void AssociarDrone(Guid droneId)

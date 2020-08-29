@@ -94,12 +94,10 @@ namespace DroneDelivery.Api
             });
 
             services.AddMediatR(typeof(CriarUsuarioHandler).Assembly);
-            services.AddAutoMapper(typeof(DroneService).Assembly);
+            services.AddAutoMapper(typeof(TokenService).Assembly);
 
             services.AddControllers();
 
-            services.AddScoped<IDroneService, DroneService>();
-            services.AddScoped<IPedidoService, PedidoService>();
             services.AddScoped<ITempoEntregaService, TempoEntregaService>();
 
             services.AddScoped<JwtSettings>();

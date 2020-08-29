@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DroneDelivery.Application.Models;
-using DroneDelivery.Application.Queries;
-using DroneDelivery.Application.Queries.Drones;
+using DroneDelivery.Application.Queries.Pedidos;
 using DroneDelivery.Application.Response;
 using DroneDelivery.Application.Validador;
 using DroneDelivery.Data.Repositorios.IRepository;
@@ -11,27 +10,28 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DroneDelivery.Application.Handlers.Drones
+namespace DroneDelivery.Application.Handlers.Pedidos
 {
-    public class ListarDronesHandler : ValidatorResponse, IRequestHandler<ListarDronesQuery, ResponseVal>
+    public class ListarPedidosHandler : ValidatorResponse, IRequestHandler<ListarPedidosQuery, ResponseVal>
     {
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ListarDronesHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public ListarPedidosHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<ResponseVal> Handle(ListarDronesQuery request, CancellationToken cancellationToken)
+
+        public async Task<ResponseVal> Handle(ListarPedidosQuery request, CancellationToken cancellationToken)
         {
-            var drones = await _unitOfWork.Drones.ObterAsync();
+
+            var pedidos = await _unitOfWork.Pedidos.ObterAsync();
 
             _response.AddValue(new
             {
-                drones = _mapper.Map<IEnumerable<Drone>, IEnumerable<DroneModel>>(drones)
+                pedidos = _mapper.Map<IEnumerable<Pedido>, IEnumerable<PedidoModel>>(pedidos)
             });
 
             return _response;

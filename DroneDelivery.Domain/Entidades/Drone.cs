@@ -44,7 +44,7 @@ namespace DroneDelivery.Domain.Entidades
             //adicioar o peso do novo pedido
             capacidadeAtual += pesoPedido;
 
-            return (Capacidade - capacidadeAtual) > 0;
+            return (Capacidade - capacidadeAtual) >= 0;
         }
 
         public bool ValidarAutonomia(ITempoEntregaService tempoEntregaService, double latitudeInicial, double longitudeInicial, double latitudePedido, double longitudePedido)
@@ -86,14 +86,14 @@ namespace DroneDelivery.Domain.Entidades
             //obter autonomia atual considerando a bateria do drone
             var autonomialAtual = Autonomia * Carga / 100;
 
-            return (autonomialAtual - tempoEntregaAtual) > 0;
+            return (autonomialAtual - tempoEntregaAtual) >= 0;
         }
 
 
 
         public bool VerificarDroneAceitaOPesoPedido(double pesoPedido)
         {
-            return Capacidade > pesoPedido;
+            return Capacidade >= pesoPedido;
         }
 
 
